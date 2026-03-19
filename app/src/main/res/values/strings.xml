@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Crossword Magic</string>
+    <string name="placeholder_text">"Number of Words in Default Puzzle: "</string>
+</resources>
