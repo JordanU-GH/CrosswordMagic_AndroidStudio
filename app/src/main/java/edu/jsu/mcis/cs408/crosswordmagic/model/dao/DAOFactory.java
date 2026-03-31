@@ -133,6 +133,7 @@ public class DAOFactory extends SQLiteOpenHelper {
                         /*
                         INSERT YOUR CODE HERE
                         */
+
                         params.put(properties.getProperty("sql_field_row"), fields[0]);
                         params.put(properties.getProperty("sql_field_column"), fields[1]);
                         params.put(properties.getProperty("sql_field_box"), fields[2]);
@@ -140,6 +141,7 @@ public class DAOFactory extends SQLiteOpenHelper {
                         params.put(properties.getProperty("sql_field_word"), fields[4]);
                         params.put(properties.getProperty("sql_field_clue"), fields[5]);
                         params.put(properties.getProperty("sql_field_puzzleid"), Integer.toString(puzzleid));
+
                         /*
                         END OF MY CODE
                          */

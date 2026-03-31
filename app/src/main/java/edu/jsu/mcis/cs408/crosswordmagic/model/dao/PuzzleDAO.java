@@ -13,6 +13,7 @@ import com.opencsv.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,10 +100,17 @@ public class PuzzleDAO {
             /* get data for new puzzle */
 
             /*
-
             INSERT YOUR CODE HERE
-
             */
+
+            String[] columns = cursor.getColumnNames();
+            for (int i = 0; i < columns.length; i++){
+                params.put(columns[i], cursor.getString(i));
+            }
+
+            /*
+            END OF MY CODE
+             */
 
             if ( !params.isEmpty() )
                 puzzle = new Puzzle(params);
