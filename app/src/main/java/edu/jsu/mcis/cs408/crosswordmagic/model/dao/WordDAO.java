@@ -153,10 +153,16 @@ public class WordDAO {
                 HashMap<String, String> params = new HashMap<>();
 
                 /*
-
                 INSERT YOUR CODE HERE
-
                 */
+
+                String[] columns = cursor.getColumnNames();
+                for (int i = 0; i < columns.length; i++){
+                    params.put(columns[i], cursor.getString(i));
+                }
+
+                /*
+                 */
 
                 word = new Word(params);
 
