@@ -1,10 +1,13 @@
 package edu.jsu.mcis.cs408.crosswordmagic.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.InputType;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -12,6 +15,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +26,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import edu.jsu.mcis.cs408.crosswordmagic.R;
 import edu.jsu.mcis.cs408.crosswordmagic.controller.CrosswordMagicController;
 
 public class CrosswordGridView extends View implements AbstractView {
@@ -280,6 +285,12 @@ public class CrosswordGridView extends View implements AbstractView {
 
         }
 
+        if (name.equals(CrosswordMagicController.GUESS_PROPERTY)) {
+            if (value instanceof Integer) {
+                Toast.makeText(this.getContext(), getResources().getString((int)value), Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
     private class OnTouchHandler implements OnTouchListener {
@@ -304,8 +315,44 @@ public class CrosswordGridView extends View implements AbstractView {
                 int n = numbers[y][x];
 
                 if (n != 0) {
+                    // Original Code for using a Toast
+                    /*
                     String text = String.format(Locale.getDefault(),"X: %d, Y: %d, Box: %d", x, y, n);
                     Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+                     */
+                    // New Code for using an alert dialog
+                    // Create Dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(R.string.dialog_title);
+                    builder.setMessage(R.string.dialog_message);
+                    final EditText input = new EditText(context);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+                    final String[] guess = new String[1];
+
+                    // methods for button presses on the dialog
+                    // Get the user guess
+                    builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface d, int i) {
+                            // send user guess and box number to model
+                            guess[0] = input.getText().toString();
+                            HashMap<String, String> params = new HashMap<>();
+                            params.put("num", Integer.toString(n));
+                            params.put("guess", guess[0]);
+                            controller.setGuess(params);
+                        }
+                    });
+                    // Cancel the users guess
+                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface d, int i) {
+                            guess[0] = "";
+                            d.cancel();
+                        }
+                    });
+                    AlertDialog aboutDialog = builder.show();
+
                 }
 
             }
