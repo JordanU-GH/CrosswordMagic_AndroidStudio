@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Crossword Magic</string>
     <string name="placeholder_text">"Number of Words in Default Puzzle: "</string>
+    <string name="puzzle_tab_title">Puzzle</string>
+    <string name="clue_tab_title">Clues</string>
+    <string name="clue_header_across">Across</string>
+    <string name="clue_header_down">Down</string>
+    <string name="message_guess_incorrect">Sorry, you guessed incorrectly.</string>
+    <string name="message_guess_correct">Congratulations, you guessed correctly!</string>
 </resources>
