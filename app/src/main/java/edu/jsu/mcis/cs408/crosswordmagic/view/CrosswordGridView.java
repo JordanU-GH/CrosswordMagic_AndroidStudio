@@ -30,9 +30,14 @@ public class CrosswordGridView extends View implements AbstractView {
 
     private final char BLOCK = '*';
 
+    // Original Values For the scalars
+    /*
     private final float TEXT_NUMBER_SCALE = 4.75f;
     private final float TEXT_LETTER_SCALE = 1.5f;
-
+    */
+    // New Values for Scalars for the Emulator
+    private final float TEXT_NUMBER_SCALE = 9.0f;
+    private final float TEXT_LETTER_SCALE = 4.0f;
     private final Paint gridPaint;
     private final TextPaint gridTextPaint;
 
