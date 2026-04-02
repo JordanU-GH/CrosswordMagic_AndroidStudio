@@ -3,7 +3,6 @@ package edu.jsu.mcis.cs408.crosswordmagic.model.dao;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
-import edu.jsu.mcis.cs408.crosswordmagic.model.Puzzle;
 
 public class GuessDAO {
 
