@@ -36,6 +36,7 @@ public class WelcomeActivity extends AppCompatActivity implements AbstractView, 
 
         binding.button.setOnClickListener(this);
         binding.spinner.setOnItemSelectedListener(this);
+        binding.puzzleMenuButton.setOnClickListener(this);
 
         /* Create Controller and Model */
 

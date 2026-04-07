@@ -36,6 +36,8 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
         View view = binding.getRoot();
         setContentView(view);
 
+        binding.downloadButton.setOnClickListener(this);
+
         /* Create Controller and Model */
 
         controller = new CrosswordMagicController();
