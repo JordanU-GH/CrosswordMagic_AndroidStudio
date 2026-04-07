@@ -2,6 +2,7 @@ package edu.jsu.mcis.cs408.crosswordmagic.model;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -43,7 +44,26 @@ public class CrosswordMagicModel extends AbstractModel {
         firePropertyChange(CrosswordMagicController.TEST_PROPERTY, null, wordCount);
 
     }
+    // **********************
+    // Methods added in version_two
+    // Get the list of puzzle names in the database
+    public String[] getPuzzleNames(){
+        PuzzleDAO puzzleDAO = daoFactory.getPuzzleDAO();
+        PuzzleListItem[] list = puzzleDAO.list();
 
+        ArrayList<String> names = new ArrayList<>();
+        for (PuzzleListItem puzzle : list){
+            names.add(puzzle.toString());
+        }
+        return names.toArray(new String[]{});
+    }
+    public void getPuzzleList(){
+        PuzzleDAO puzzleDAO = daoFactory.getPuzzleDAO();
+        PuzzleListItem[] list = puzzleDAO.list();
+        firePropertyChange(CrosswordMagicController.PUZZLE_LIST_PROPERTY, null, list);
+    }
+
+    // **********************
     public void getCluesAcross() {
         firePropertyChange(CrosswordMagicController.CLUES_ACROSS_PROPERTY, null, puzzle.getCluesAcross());
     }
