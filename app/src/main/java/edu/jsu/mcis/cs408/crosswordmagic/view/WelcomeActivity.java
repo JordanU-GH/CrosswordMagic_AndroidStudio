@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 
 import java.beans.PropertyChangeEvent;
 
+import edu.jsu.mcis.cs408.crosswordmagic.R;
 import edu.jsu.mcis.cs408.crosswordmagic.controller.CrosswordMagicController;
 import edu.jsu.mcis.cs408.crosswordmagic.databinding.ActivityWelcomeBinding;
 import edu.jsu.mcis.cs408.crosswordmagic.model.CrosswordMagicModel;
@@ -56,9 +57,17 @@ public class WelcomeActivity extends AppCompatActivity implements AbstractView, 
     @Override
     public void onClick(View view) {
 
-        Intent i = new Intent(this, MainActivity.class);
-        i.putExtra("puzzleid", puzzleid);
-        startActivity(i);
+        String tag = view.getTag().toString();
+        if (tag.equals(getResources().getString(R.string.play_button_tag))){
+            Intent i = new Intent(this, MainActivity.class);
+            i.putExtra("puzzleid", puzzleid);
+            startActivity(i);
+        }
+        else if (tag.equals(getResources().getString(R.string.puzzle_menu_button_tag))){
+            Intent i = new Intent(this, MenuActivity.class);
+            startActivity(i);
+        }
+
 
     }
 

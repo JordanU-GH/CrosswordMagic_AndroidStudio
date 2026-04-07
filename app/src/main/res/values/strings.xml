@@ -10,6 +10,9 @@
     <string name="dialog_title">Guess Entry Dialog</string>
     <string name="dialog_message">Guess A Word</string>
     <string name="play_button_text">Play Puzzle</string>
+    <string name="play_button_tag">playBtn</string>
     <string name="puzzle_menu_button_text">Get New Puzzles</string>
+    <string name="puzzle_menu_button_tag">menuBtn</string>
     <string name="download_puzzles_button_text">Download and Play</string>
+    <string name="download_puzzles_button_tag">downloadBtn</string>
 </resources>

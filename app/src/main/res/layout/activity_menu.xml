@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/download_puzzles_button_text"
+        android:tag="@string/download_puzzles_button_tag"
         app:layout_constraintBottom_toTopOf="@+id/puzzle_list_recycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias=".5"
