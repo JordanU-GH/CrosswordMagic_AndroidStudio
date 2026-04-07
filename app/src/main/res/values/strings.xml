@@ -9,4 +9,6 @@
     <string name="message_guess_correct">Congratulations, you guessed correctly!</string>
     <string name="dialog_title">Guess Entry Dialog</string>
     <string name="dialog_message">Guess A Word</string>
+    <string name="default_spinner_val">Placeholder Value</string>
+    <string name="play_button_text">Play Puzzle</string>
 </resources>

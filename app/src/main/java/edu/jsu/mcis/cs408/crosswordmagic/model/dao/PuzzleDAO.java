@@ -20,6 +20,7 @@ import java.util.List;
 
 import edu.jsu.mcis.cs408.crosswordmagic.R;
 import edu.jsu.mcis.cs408.crosswordmagic.model.Puzzle;
+import edu.jsu.mcis.cs408.crosswordmagic.model.PuzzleListItem;
 import edu.jsu.mcis.cs408.crosswordmagic.model.Word;
 import edu.jsu.mcis.cs408.crosswordmagic.model.WordDirection;
 
@@ -82,7 +83,7 @@ public class PuzzleDAO {
 
     public Puzzle find(SQLiteDatabase db, int puzzleid) {
 
-        /* use this method if there is NOT already a SQLiteDatabase open */
+        /* use this method if there IS already a SQLiteDatabase open */
 
         Puzzle puzzle = null;
 
@@ -159,6 +160,37 @@ public class PuzzleDAO {
 
         return puzzle;
 
+    }
+
+    // New methods added in version two
+    public PuzzleListItem[] list (){
+        // Use this method if there is NOT a database already open
+
+        SQLiteDatabase db = daoFactory.getWritableDatabase();
+        PuzzleListItem[] result = list(db);
+        db.close();
+        return result;
+    }
+
+    public PuzzleListItem[] list (SQLiteDatabase db){
+        // Use this method if there IS a database already open
+        ArrayList<PuzzleListItem> puzzles = new ArrayList<>();
+        String query = daoFactory.getProperty("sql_get_puzzle_list");
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()){
+            cursor.moveToFirst();
+
+            do{
+                // create a new puzzleListItem and add it to an arrayList
+                PuzzleListItem newItem = new PuzzleListItem(cursor.getInt(0), cursor.getString(1));
+                puzzles.add(newItem);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return puzzles.toArray(new PuzzleListItem[]{});
     }
 
 }
