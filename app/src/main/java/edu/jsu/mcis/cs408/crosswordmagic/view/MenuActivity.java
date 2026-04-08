@@ -24,7 +24,7 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
     private ActivityMenuBinding binding;
     private CrosswordMagicController controller;
     private final PuzzleListEntryClickHandler itemClick = new PuzzleListEntryClickHandler();
-    private Integer lastId = null;
+    private Integer selectedId = null;
 
     PuzzleListEntryClickHandler getItemClick() { return itemClick; }
 
@@ -43,6 +43,7 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
         controller = new CrosswordMagicController();
 
         CrosswordMagicModel model = new CrosswordMagicModel(this);
+        selectedId = null;
 
         /* Register View(s) and Model(s) with Controller */
 
@@ -56,10 +57,12 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
 
     @Override
     public void onClick(View v){
-        // auto-play the selected puzzle after it is downloaded
-        Intent i = new Intent(this, MainActivity.class);
-        i.putExtra("puzzleid", 1); // Change this value to a dynamically generated one later
-        startActivity(i);
+        if (selectedId == null){
+            Toast.makeText(v.getContext(), "Tap On a Puzzle", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // download the selected puzzle
+        controller.setDownload(selectedId);
     }
 
     @Override
@@ -79,6 +82,13 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
             List<PuzzleListItem> itemList = Arrays.asList(itemArray);
             updateRecyclerView(itemList);
         }
+        else if (propertyName.equals(CrosswordMagicController.DOWNLOAD_PROPERTY)){
+            // auto-play the selected puzzle after it is downloaded
+            Intent i = new Intent(this, MainActivity.class);
+            int databaseId = Integer.parseInt(evt.getNewValue().toString());
+            i.putExtra("puzzleid", databaseId);
+            startActivity(i);
+        }
 
     }
 
@@ -89,8 +99,8 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
             RecyclerViewAdapter adapter = (RecyclerViewAdapter)binding.puzzleListRecycler.getAdapter();
             if (adapter != null) {
                 PuzzleListItem entry = adapter.getEntryAtPosition(position);
-                lastId = entry.getId();
-                Toast.makeText(v.getContext(), String.valueOf(lastId), Toast.LENGTH_SHORT).show();
+                selectedId = entry.getId();
+                Toast.makeText(v.getContext(), String.valueOf(selectedId), Toast.LENGTH_SHORT).show();
             }
         }
     }

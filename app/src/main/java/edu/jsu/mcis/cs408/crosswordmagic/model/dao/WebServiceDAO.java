@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
@@ -36,6 +35,20 @@ public class WebServiceDAO {
             String response = pending.get();
             pool.shutdown();
             result = new JSONArray(response);
+        }
+        catch (Exception e) { e.printStackTrace(); }
+        return result;
+    }
+
+    public JSONObject getPuzzle(int puzzleId){
+        requestUrl = ROOT_URL + "?id=" + puzzleId;
+        JSONObject result = null;
+        try {
+            pool = Executors.newSingleThreadExecutor();
+            Future<String> pending = pool.submit(new CallableHTTPRequest());
+            String response = pending.get();
+            pool.shutdown();
+            result = new JSONObject(response);
         }
         catch (Exception e) { e.printStackTrace(); }
         return result;

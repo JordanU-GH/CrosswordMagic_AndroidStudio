@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 public class CrosswordMagicController extends AbstractController {
 
+    public static final String DOWNLOAD_PROPERTY = "Download";
+
     public static final String TEST_PROPERTY = "TestProperty";
 
     public static final String NEW_PUZZLE_LIST_PROPERTY = "NewPuzzleList";
@@ -37,4 +39,6 @@ public class CrosswordMagicController extends AbstractController {
     public void getGridDimensions() { getModelProperty(GRID_DIMENSION_PROPERTY); }
 
     public void setGuess(HashMap<String, String> params) { setModelProperty(GUESS_PROPERTY, params); }
+
+    public void setDownload(Integer puzzleId){ setModelProperty(DOWNLOAD_PROPERTY, puzzleId);}
 }

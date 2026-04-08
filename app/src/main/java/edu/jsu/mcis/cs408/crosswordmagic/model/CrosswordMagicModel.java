@@ -17,6 +17,7 @@ import edu.jsu.mcis.cs408.crosswordmagic.model.dao.DAOFactory;
 import edu.jsu.mcis.cs408.crosswordmagic.model.dao.GuessDAO;
 import edu.jsu.mcis.cs408.crosswordmagic.model.dao.PuzzleDAO;
 import edu.jsu.mcis.cs408.crosswordmagic.model.dao.WebServiceDAO;
+import edu.jsu.mcis.cs408.crosswordmagic.model.dao.WordDAO;
 
 public class CrosswordMagicModel extends AbstractModel {
 
@@ -77,10 +78,10 @@ public class CrosswordMagicModel extends AbstractModel {
             }
         }
         catch (JSONException j){
-            Log.i("Error With JSON In CrosswordMagicModel.getNewPuzzleList(): ", j.toString());
+            Log.i("getNewPuzzleList", j.toString());
         }
         catch (Error e){
-            Log.i("Error In CrosswordMagicModel.getNewPuzzleList(): ", e.toString());
+            Log.i("getNewPuzzleList", e.toString());
         }
 
         PuzzleListItem[] itemList = list.toArray(new PuzzleListItem[0]);
@@ -116,6 +117,70 @@ public class CrosswordMagicModel extends AbstractModel {
         dimension[1] = puzzle.getWidth();
         firePropertyChange(CrosswordMagicController.GRID_DIMENSION_PROPERTY, null, dimension);
 
+    }
+
+    public void setDownload(Integer webId) {
+        PuzzleDAO puzzleDAO = daoFactory.getPuzzleDAO();
+        WordDAO wordDAO = daoFactory.getWordDAO();
+
+        // get selected puzzle and associated data from web service
+        WebServiceDAO webServiceDAO = daoFactory.getWebServiceDAO();
+        JSONObject puzzleObject = webServiceDAO.getPuzzle(webId);
+
+        // parse the puzzle information and add it to the database
+        HashMap<String, String> puzzleParams = parsePuzzle(puzzleObject);
+        Puzzle newPuzzle = new Puzzle(puzzleParams);
+        int databaseId = puzzleDAO.create(newPuzzle);
+
+        // parse the word information and add them to the database
+        // also, associate the words with the correct puzzle
+        ArrayList<HashMap<String, String>> wordParams = parseWords(puzzleObject, databaseId);
+        for (HashMap<String, String> paramSet : wordParams) {
+            Word word = new Word(paramSet);
+            wordDAO.create(word);
+        }
+
+        firePropertyChange(CrosswordMagicController.DOWNLOAD_PROPERTY, null, databaseId);
+    }
+
+    // helper methods for the setDownload method
+    private HashMap<String, String> parsePuzzle(JSONObject obj){
+        // parse the puzzle and create a new puzzle entry and its associated words
+        HashMap<String, String> puzzleParams = new HashMap<>();
+        try {
+            puzzleParams.put("name", (String) obj.get("name"));
+            puzzleParams.put("description", (String) obj.get("description"));
+            puzzleParams.put("height", Integer.toString(obj.getInt("height")));
+            puzzleParams.put("width", Integer.toString(obj.getInt("width")));
+        } catch (JSONException e) {
+            Log.i("Error", e.toString());
+            throw new RuntimeException(e);
+        }
+        return puzzleParams;
+    }
+    private ArrayList<HashMap<String, String>> parseWords(JSONObject obj, int id){
+        ArrayList<HashMap<String, String>> wordList = new ArrayList<>();
+        try{
+            JSONArray entries = obj.getJSONArray("puzzle");
+            for(int i = 0; i < entries.length(); i++){
+                JSONObject word = entries.getJSONObject(i);
+                HashMap<String, String> wordParams = new HashMap<>();
+
+                wordParams.put("puzzleid", Integer.toString(id));
+                wordParams.put("row", Integer.toString(word.getInt("row")));
+                wordParams.put("column", Integer.toString(word.getInt("column")));
+                wordParams.put("box", Integer.toString(word.getInt("box")));
+                wordParams.put("word", (String) word.get("word"));
+                wordParams.put("clue", (String) word.get("clue"));
+                wordParams.put("direction", Integer.toString(word.getInt("direction")));
+
+                wordList.add(wordParams);
+            }
+        } catch (JSONException e){
+            Log.i("Error", e.toString());
+            throw new RuntimeException();
+        }
+        return wordList;
     }
 
     public void setGuess(HashMap<String, String> params) {
