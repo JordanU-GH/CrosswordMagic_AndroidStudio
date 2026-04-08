@@ -48,7 +48,7 @@ public class WebServiceDAO {
             // ... adapt Runnable code from "Web Service Demo" here
             String line;
             HttpURLConnection conn = null;
-            JSONArray results = null;
+            Object results = null;
 
             /* Log Request Data */
             try {
@@ -64,7 +64,7 @@ public class WebServiceDAO {
                 conn.setReadTimeout(10000); /* ten seconds */
                 conn.setConnectTimeout(15000); /* fifteen seconds */
 
-                conn.setRequestMethod("GET");
+                conn.setRequestMethod(HTTP_METHOD);
                 conn.setDoInput(true);
 
                 /* Send Request */
@@ -95,7 +95,16 @@ public class WebServiceDAO {
                     throw new InterruptedException();
 
                 /* Parse Response as JSON */
-                results = new JSONArray(r.toString());
+                String response = r.toString().trim();
+                if (response.startsWith("{")){
+                    results = new JSONObject(r.toString());
+                }
+                else if (response.startsWith("[")){
+                    results = new JSONArray(r.toString());
+                }
+                else{
+                    Log.i("Error", "response In WebServiceDAO.call() is neither a JSONArray nor JSONObject");
+                }
                 r.append(results);
 
             }
