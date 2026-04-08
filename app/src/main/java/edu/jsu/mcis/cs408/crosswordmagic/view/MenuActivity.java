@@ -49,8 +49,8 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
         controller.addModel(model);
         controller.addView(this);
 
-        // Load puzzle list
-        controller.getPuzzleList();
+        // Load puzzle list from server
+        controller.getNewPuzzleList();
 
     }
 
@@ -74,9 +74,10 @@ public class MenuActivity extends AppCompatActivity implements AbstractView, Vie
         String propertyValueString = evt.getNewValue().toString();
 
         Log.i(TAG, "New " + propertyName + " Value from Model: " + propertyValueString);
-        if (propertyName.equals(CrosswordMagicController.PUZZLE_LIST_PROPERTY)){
-            List<PuzzleListItem> list = Arrays.asList((PuzzleListItem[]) evt.getNewValue());
-            updateRecyclerView(list);
+        if (propertyName.equals(CrosswordMagicController.NEW_PUZZLE_LIST_PROPERTY)){
+            PuzzleListItem[] itemArray = (PuzzleListItem[]) evt.getNewValue();
+            List<PuzzleListItem> itemList = Arrays.asList(itemArray);
+            updateRecyclerView(itemList);
         }
 
     }

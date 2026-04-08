@@ -48,7 +48,7 @@ public class WebServiceDAO {
             // ... adapt Runnable code from "Web Service Demo" here
             String line;
             HttpURLConnection conn = null;
-            JSONObject results = null;
+            JSONArray results = null;
 
             /* Log Request Data */
             try {
@@ -65,7 +65,7 @@ public class WebServiceDAO {
                 conn.setConnectTimeout(15000); /* fifteen seconds */
 
                 conn.setRequestMethod("GET");
-                conn.setDoInput(false);
+                conn.setDoInput(true);
 
                 /* Send Request */
                 conn.connect();
@@ -95,7 +95,7 @@ public class WebServiceDAO {
                     throw new InterruptedException();
 
                 /* Parse Response as JSON */
-                results = new JSONObject(r.toString());
+                results = new JSONArray(r.toString());
                 r.append(results);
 
             }

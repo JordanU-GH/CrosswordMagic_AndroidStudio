@@ -62,7 +62,7 @@ public class PuzzleFragment extends Fragment implements TabFragment, AbstractVie
         String name = evt.getPropertyName();
         Object value = evt.getNewValue();
 
-        if (name.equals(CrosswordMagicController.PUZZLE_LIST_PROPERTY)) {
+        if (name.equals(CrosswordMagicController.SAVED_PUZZLE_LIST_PROPERTY)) {
 
             if (value instanceof Character[][]) {
 

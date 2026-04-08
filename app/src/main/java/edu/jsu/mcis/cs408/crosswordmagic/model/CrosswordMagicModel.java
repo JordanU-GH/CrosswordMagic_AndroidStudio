@@ -1,6 +1,11 @@
 package edu.jsu.mcis.cs408.crosswordmagic.model;
 
 import android.content.Context;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +16,7 @@ import edu.jsu.mcis.cs408.crosswordmagic.controller.CrosswordMagicController;
 import edu.jsu.mcis.cs408.crosswordmagic.model.dao.DAOFactory;
 import edu.jsu.mcis.cs408.crosswordmagic.model.dao.GuessDAO;
 import edu.jsu.mcis.cs408.crosswordmagic.model.dao.PuzzleDAO;
+import edu.jsu.mcis.cs408.crosswordmagic.model.dao.WebServiceDAO;
 
 public class CrosswordMagicModel extends AbstractModel {
 
@@ -57,10 +63,33 @@ public class CrosswordMagicModel extends AbstractModel {
         }
         return names.toArray(new String[]{});
     }
-    public void getPuzzleList(){
+    public void getNewPuzzleList(){
+        WebServiceDAO webServiceDAO = daoFactory.getWebServiceDAO();
+        JSONArray puzzleArray = webServiceDAO.list();
+        ArrayList<PuzzleListItem> list = new ArrayList<>();
+        try{
+            for (int i = 0; i < puzzleArray.length(); i++) {
+                JSONObject puzzle = (JSONObject) puzzleArray.get(i);
+                int id = (int) puzzle.get("id");
+                String name = (String) puzzle.get("name");
+                PuzzleListItem newItem = new PuzzleListItem(id, name);
+                list.add(newItem);
+            }
+        }
+        catch (JSONException j){
+            Log.i("Error With JSON In CrosswordMagicModel.getNewPuzzleList(): ", j.toString());
+        }
+        catch (Error e){
+            Log.i("Error In CrosswordMagicModel.getNewPuzzleList(): ", e.toString());
+        }
+
+        PuzzleListItem[] itemList = list.toArray(new PuzzleListItem[0]);
+        firePropertyChange(CrosswordMagicController.NEW_PUZZLE_LIST_PROPERTY, null, itemList);
+    }
+    public void getSavedPuzzleList(){
         PuzzleDAO puzzleDAO = daoFactory.getPuzzleDAO();
         PuzzleListItem[] list = puzzleDAO.list();
-        firePropertyChange(CrosswordMagicController.PUZZLE_LIST_PROPERTY, null, list);
+        firePropertyChange(CrosswordMagicController.SAVED_PUZZLE_LIST_PROPERTY, null, list);
     }
 
     // **********************
@@ -125,5 +154,4 @@ public class CrosswordMagicModel extends AbstractModel {
         }
 
     }
-
 }
