@@ -1,7 +1,6 @@
 package edu.jsu.mcis.cs408.crosswordmagic.view;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -19,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
@@ -35,14 +35,11 @@ public class CrosswordGridView extends View implements AbstractView {
 
     private final char BLOCK = '*';
 
-    // Original Values For the scalars
-    /*
-    private final float TEXT_NUMBER_SCALE = 4.75f;
-    private final float TEXT_LETTER_SCALE = 1.5f;
-    */
-    // New Values for Scalars for the Emulator
-    private final float TEXT_NUMBER_SCALE = 9.0f;
-    private final float TEXT_LETTER_SCALE = 4.0f;
+    private final float TEXT_NUMBER_SCALE = 4.75f; // text scale (larger value for smaller text)
+    private final float TEXT_LETTER_SCALE = 1.5f; // number scale (larger value for smaller numbers)
+
+    private final float TEXT_SCALE_MIN = 63;
+
     private final Paint gridPaint;
     private final TextPaint gridTextPaint;
 
@@ -52,9 +49,13 @@ public class CrosswordGridView extends View implements AbstractView {
     private Character[][] letters;
     private Integer[][] numbers;
 
+    private Context appContext;
+
     public CrosswordGridView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
+
+        this.appContext = context;
 
         gridTextPaint = new TextPaint();
         gridTextPaint.setAntiAlias(true);
@@ -110,6 +111,8 @@ public class CrosswordGridView extends View implements AbstractView {
             drawNumbers(canvas);
             drawLetters(canvas);
 
+            //Toast.makeText(this.getContext(), "Square Width: " + squareWidth, Toast.LENGTH_SHORT).show();
+
         }
 
     }
@@ -118,7 +121,7 @@ public class CrosswordGridView extends View implements AbstractView {
 
         if (letters != null) {
 
-            float letterTextSize = (squareWidth / TEXT_LETTER_SCALE);
+            float letterTextSize = (squareWidth < TEXT_SCALE_MIN ? (squareWidth / TEXT_LETTER_SCALE) : (squareWidth / (TEXT_LETTER_SCALE * 2)));
             gridTextPaint.setTextSize(letterTextSize * getResources().getDisplayMetrics().density);
 
             for (int y = 0; y < letters.length; ++y) {
@@ -150,7 +153,7 @@ public class CrosswordGridView extends View implements AbstractView {
 
         if (numbers != null) {
 
-            float numberTextSize = (squareWidth / TEXT_NUMBER_SCALE);
+            float numberTextSize = (squareWidth < TEXT_SCALE_MIN ? (squareWidth / TEXT_NUMBER_SCALE) : (squareWidth / (TEXT_NUMBER_SCALE * 2)));
             gridTextPaint.setTextSize(numberTextSize * getResources().getDisplayMetrics().density);
 
             for (int y = 0; y < numbers.length; ++y) {
@@ -286,16 +289,22 @@ public class CrosswordGridView extends View implements AbstractView {
         }
 
         if (name.equals(CrosswordMagicController.GUESS_PROPERTY)) {
+
             if (value instanceof Integer) {
-                Toast.makeText(this.getContext(), getResources().getString((int)value), Toast.LENGTH_SHORT).show();
+
+                String message = this.getContext().getString((Integer)value);
+
+                Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT).show();
+
             }
+
         }
 
     }
 
     private class OnTouchHandler implements OnTouchListener {
 
-        private final Context context;
+        private Context context;
 
         public OnTouchHandler(Context context) {
             this.context = context;
@@ -315,43 +324,47 @@ public class CrosswordGridView extends View implements AbstractView {
                 int n = numbers[y][x];
 
                 if (n != 0) {
-                    // Original Code for using a Toast
-                    /*
-                    String text = String.format(Locale.getDefault(),"X: %d, Y: %d, Box: %d", x, y, n);
-                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-                     */
-                    // New Code for using an alert dialog
-                    // Create Dialog
+
+                    //String text = String.format(Locale.getDefault(),"X: %d, Y: %d, Box: %d", x, y, n);
+                    //Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle(R.string.dialog_title);
-                    builder.setMessage(R.string.dialog_message);
+                    builder.setTitle(R.string.guess_dialog_title);
+                    builder.setMessage(R.string.guess_dialog_message);
                     final EditText input = new EditText(context);
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(input);
-                    final String[] guess = new String[1];
 
-                    // methods for button presses on the dialog
-                    // Get the user guess
-                    builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.guess_dialog_button_guess, new DialogInterface.OnClickListener() {
+
                         @Override
                         public void onClick(DialogInterface d, int i) {
-                            // send user guess and box number to model
-                            guess[0] = input.getText().toString();
+
+                            String userInput = input.getText().toString();
+
                             HashMap<String, String> params = new HashMap<>();
-                            params.put("num", Integer.toString(n));
-                            params.put("guess", guess[0]);
+                            params.put("num", String.valueOf(n));
+                            params.put("guess", userInput.toUpperCase().trim());
+
                             controller.setGuess(params);
+
                         }
+
                     });
-                    // Cancel the users guess
-                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+
+                    builder.setNegativeButton(R.string.guess_dialog_button_cancel, new DialogInterface.OnClickListener() {
+
                         @Override
                         public void onClick(DialogInterface d, int i) {
-                            guess[0] = "";
+
+                            String userInput = "";
                             d.cancel();
+
                         }
+
                     });
-                    AlertDialog aboutDialog = builder.show();
+
+                    builder.show();
 
                 }
 
@@ -364,4 +377,3 @@ public class CrosswordGridView extends View implements AbstractView {
     }
 
 }
-

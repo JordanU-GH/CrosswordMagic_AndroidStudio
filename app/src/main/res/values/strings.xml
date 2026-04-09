@@ -7,8 +7,10 @@
     <string name="clue_header_down">Down</string>
     <string name="message_guess_incorrect">Sorry, you guessed incorrectly.</string>
     <string name="message_guess_correct">Congratulations, you guessed correctly!</string>
-    <string name="dialog_title">Guess Entry Dialog</string>
-    <string name="dialog_message">Guess A Word</string>
+    <string name="guess_dialog_title">Guess Entry Dialog</string>
+    <string name="guess_dialog_message">Guess A Word</string>
+    <string name="guess_dialog_button_guess">Guess</string>
+    <string name="guess_dialog_button_cancel">Cancel</string>
     <string name="play_button_text">Play Puzzle</string>
     <string name="play_button_tag">playBtn</string>
     <string name="puzzle_menu_button_text">Get New Puzzles</string>
